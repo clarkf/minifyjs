@@ -1,0 +1,17 @@
+{
+  "name": "minifyjs",
+  "author": "Clark Fischer - https://github.com/clarkf",
+  "version": "0.0.1",
+  "main": "index",
+  "bin": {
+    "minifyjs": "./bin/minify"
+  },
+  "engines": {
+    "node": "*"
+  },
+  "description": "A node-based javascript minifier/beautifier.",
+  "homepage": "http://github.com/clarkf/minifyjs",
+  "directories": {
+    "lib": "lib"
+  }
+}

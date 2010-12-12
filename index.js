@@ -1,0 +1,1 @@
+exports.minify = require("./lib/minify");
