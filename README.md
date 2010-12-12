@@ -1,6 +1,8 @@
 # minifyjs — A node minifier
 
 <https://github.com/clarkf/minifyjs>
+
+
 `minifyjs` is a Javascript code minifier written for node. It's aim is flexibility, offering you a wide array of engines to choose from.
 
 ## Installation
