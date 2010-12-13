@@ -23,6 +23,10 @@ out: while (args.length > 0) {
             case "--beautify":
                 options.mode = 'beautify';
                 break;
+            case "-m":
+            case "--minify":
+                options.mode = 'minify';
+                break;
             case "-l":
             case "--level":
                 options.level = Number(args.shift());

@@ -18,7 +18,7 @@ Minifyjs is a npm package. You should be able to install it using
 
 You can use minifyjs from the command line.
 
-    minifyjs myfile.js [arguments]
+    minifyjs [arguments] myfile.js
 
 Possible arguments
 
@@ -32,6 +32,20 @@ Possible arguments
 * `-v` or `--verbose` — Verbose output. Currently, the minification engine only uses this. If any engine returns a warning (some do, some don't) and verbosity is enabled, it will write the warnings to STDERR.
 * `-o` or `--output` — Write data to a specific file instead of outputting.
 
+The concept here is for use within larger projects. You can easily commit your project using:
+
+    minifyjs mycode.js > mycode.min.js
+
+This will create a file called mycode.min.js containing the smallest minified version available (see `best` engine explanation below).
+
+Or, with a specific engine:
+
+    minifyjs -e uglify mycode.js
+
+Or, beautify with a specific engine and verbosity:
+
+    minifyjs -b -v -e js-beautify mycode.js
+
 ## Engines
 
 ### Minification engines
@@ -43,7 +57,7 @@ Currently, minifyjs only supports two engines for minification:
 
 ### Beautification engines
 * `uglify` — Mihai Bazon's amazing [UglifyJS](https://github.com/mishoo/UglifyJS).
-* `beautify-js` — <https://github.com/einars/js-beautify>
+* `js-beautify` — <https://github.com/einars/js-beautify>
 
 ## API
 If you'd like to use minifyjs programmatically, you can do so by using `require('minifyjs')`. Currently, the API looks like this, but I'd like to make it prettier soon:
