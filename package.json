@@ -1,8 +1,8 @@
 {
   "name": "minifyjs",
   "author": "Clark Fischer - https://github.com/clarkf",
-  "version": "0.0.1",
-  "main": "index",
+  "version": "0.0.5",
+  "main": "lib/minify",
   "bin": {
     "minifyjs": "./bin/minify"
   },

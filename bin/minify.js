@@ -7,7 +7,7 @@ var minify = require("minifyjs");
 
 var options = {
         mode: 'minify',
-        level: undefined,
+        level: 3,
         engine: undefined,
         verbose: false,
         output: true            // stdout
@@ -25,7 +25,7 @@ out: while (args.length > 0) {
                 break;
             case "-l":
             case "--level":
-                options.level = args.shift();
+                options.level = Number(args.shift());
                 break;
             case "--engine":
             case "-e":
@@ -80,21 +80,13 @@ function output(text) {
 
 function processIt(code, cb) {
         try {
-                minify.minify.minify(
-                	options.mode,
-                	code,
-                	function (code) {
-						cb(code);
-					},
+				minify[options.mode](
+					code,
+					cb,
 					options.engine,
 					options.level,
-					options.verbose ? function (warnings) {
-						var i = 0, warning;
-						for ( ; warning = warnings[i]; i++ ) {
-							sys.debug(warning);
-						}
-					} : undefined
-                );
+					options.verbose ? sys.error : undefined
+				);
         } catch(ex) {
                 sys.debug(ex.stack);
                 sys.debug(sys.inspect(ex));
