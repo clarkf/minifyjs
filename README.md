@@ -27,9 +27,10 @@ Possible arguments
     * `-e` or `--engine E` — Specify a minification engine. If left unspecified, it defaults to 'best', which calls all engines, and returns the most highly optimized code. For a list of available engines, see Engine section below.
     * `-l I` or `--level I` — Specify a minification level. This is passed to the minification level. Generally, there are three levels available:
         * `0` — Strips whitespace, leaves code intact (depending on engine)
-        * `1` — Simple optimizations. Changes code minorly without deep optimization. Probably what you'll want for most code.
+        * `1` — Simple optimizations. Changes code slightly without deep optimization. Probably what you'll want for most code.
         * `2` — Advanced optimizations.
 * `-v` or `--verbose` — Verbose output. Currently, the minification engine only uses this. If any engine returns a warning (some do, some don't) and verbosity is enabled, it will write the warnings to STDERR.
+* `-o` or `--output` — Write data to a specific file instead of outputting.
 
 ## Engines
 
@@ -41,13 +42,19 @@ Currently, minifyjs only supports two engines for minification:
 * `best` — Custom engine which calls all other engines and compares their output. It finds the smallest (most minified) code, and returns it.
 
 ### Beautification engines
-Currently, minifyjs only works with UglifyJS's beautification engine. If you specify an engine (using `-e` or `--engine`) when requesting beautification (`-b` or `--beautify`), it won't do anything.
+* `uglify` — Mihai Bazon's amazing [UglifyJS](https://github.com/mishoo/UglifyJS).
+* `beautify-js` — <https://github.com/einars/js-beautify>
 
 ## API
-If you'd like to use minifyjs programattically, you can do so by using `require('minifyjs')`. Currently, the API looks like this, but I'd like to make it prettier soon:
+If you'd like to use minifyjs programmatically, you can do so by using `require('minifyjs')`. Currently, the API looks like this, but I'd like to make it prettier soon:
 
     mjs = require('minifyjs');
-    mjs.minify.minify(mode, code, callback, engine, level, warning);
+    
+    //Minify some code
+    mjs.minify(code, callback, engine, level, log);
+    
+    //Beautify some code
+    mjs.beautify(code, callback, engine, level, log)
 
 Where
 
@@ -56,7 +63,20 @@ Where
 * `callback` is a `Function` to be called once the code is returned from the engine. It's passed back in the format `callback(code);`
 * `engine` *optional* is a `String` containing the desired engine (currently `gcc` or `uglify`). Defaults to `best`.
 * `level` *optional* is an `Integer` containing the compilation level. Defaults to 3 (most optimized).
-* `warning` is a `function` to be called with a list of warnings. If left unspecified, warnings are hidden. Calls back in format `warning([warningString1,warningString2]);`
+* `log` is a `function` for logging. If left unspecified, warnings are hidden. Calls back in format `log(logMsg);`
+
+Node that a callback is required because some methods (read: gcc) require asynchronous calls. In order to support this sort of engine, all code comes from callbacks. A good example may be
+
+    var myCode = "...codehere...";
+    require('minifyjs').minify(myCode, function (code) {
+    	//Minified code exists in code.
+    	
+    	//Push all code to stdout
+    	console.log(code);
+    }, 'gcc', 3, function (msg) {
+    	//Push all log messages to stderr.
+    	process.error(msg);
+    });
 
 ## Conclusion
 
