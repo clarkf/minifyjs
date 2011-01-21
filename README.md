@@ -28,7 +28,7 @@ You can use minifyjs from the command line.
 
 Possible arguments
 
-* `-b` or `--beautify` — Beautify code. The opposite of minifying code. Currently, minifyjs uses [UglifyJS](https://github.com/mishoo/UglifyJS)'s beautification service, which, unfortunately, strips all comments.
+* `-b` or `--beautify` — Beautify code. The opposite of minifying code.
 * `-m` or `--minify` — Minify code. This is the default mode of minifyjs, so you don't necessarily need to specify this. Available options for the minification engine
     * `-e` or `--engine E` — Specify a minification engine. If left unspecified, it defaults to 'best', which calls all engines, and returns the most highly optimized code. For a list of available engines, see Engine section below.
     * `-l I` or `--level I` — Specify a minification level. This is passed to the minification level. Generally, there are three levels available:
