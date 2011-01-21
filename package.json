@@ -1,8 +1,9 @@
 {
   "name": "minifyjs",
-  "author": "Clark Fischer - https://github.com/clarkf",
-  "version": "0.0.5",
+  "author": "Clark Fischer",
+  "version": "0.0.6",
   "main": "lib/minify",
+  "keywords": ["minify", "minifier", "min", "minification", "uglify", "gcc", "closure", "yui"],
   "bin": {
     "minifyjs": "./bin/minify"
   },
@@ -13,5 +14,13 @@
   "homepage": "http://github.com/clarkf/minifyjs",
   "directories": {
     "lib": "lib"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/clarkf/minifyjs.git"
+  },
+  "dependencies": {
+    "uglify": ">=0.0.1",
+    "yui-compressor": ">=0.1.0"
   }
 }

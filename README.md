@@ -8,13 +8,19 @@
 ## Installation
 
 
-Minifyjs is a npm package. You should be able to install it using
+minifyjs is an [npm](http://npmjs.org) package. You should be able to install it using
 
     npm install minifyjs
 
+This will install the current stable version. To install the latest development version, clone this repository and install it.
+
+    git clone git://github.com/clarkf/minifyjs.git
+    cd minifyjs
+    npm install
+
+Congratulations! You're half way to the minified files of your dreams.
 
 ## Use
-
 
 You can use minifyjs from the command line.
 
@@ -53,45 +59,46 @@ Currently, minifyjs only supports two engines for minification:
 
 * `uglify` — Mihai Bazon's amazing [UglifyJS](https://github.com/mishoo/UglifyJS).
 * `gcc` — [Google Closure Compiler](http://code.google.com/closure/compiler/). Note that this script leverages the API, so the code is not processed on your computer. See their [API Reference](http://code.google.com/closure/compiler/docs/api-ref.html) for details.
+* `yui` — YUI Compressor. This is currently done through Tim Smart's `node-yui-compressor` module. Currently, minification levels are ignored.
 * `best` — Custom engine which calls all other engines and compares their output. It finds the smallest (most minified) code, and returns it.
 
 ### Beautification engines
 * `uglify` — Mihai Bazon's amazing [UglifyJS](https://github.com/mishoo/UglifyJS).
-* `js-beautify` — <https://github.com/einars/js-beautify>
+* `js-beautify` — Einar Lielmanis' [js-beautify](https://github.com/einars/js-beautify).
 
 ## API
-If you'd like to use minifyjs programmatically, you can do so by using `require('minifyjs')`. Currently, the API looks like this, but I'd like to make it prettier soon:
+
+_Note that the API has changed a bit since 0.0.5_
+
+If you'd like to use minifyjs programmatically, you can do so by using `require('minifyjs')`. Currently, the API looks like this:
 
     mjs = require('minifyjs');
     
     //Minify some code
-    mjs.minify(code, callback, engine, level, log);
+    mjs.minify(code, options, callback);
     
     //Beautify some code
-    mjs.beautify(code, callback, engine, level, log)
+    mjs.beautify(code, options, callback);
 
 Where
 
-* `mode` is a `String` containing the mode (either `beautify` or `minify`)
 * `code` is a `String` containing the code to be processed.
-* `callback` is a `Function` to be called once the code is returned from the engine. It's passed back in the format `callback(code);`
-* `engine` *optional* is a `String` containing the desired engine (currently `gcc` or `uglify`). Defaults to `best`.
-* `level` *optional* is an `Integer` containing the compilation level. Defaults to 3 (most optimized).
-* `log` is a `function` for logging. If left unspecified, warnings are hidden. Calls back in format `log(logMsg);`
+* `options` is a key/value hash. Options include: `engine` (the engine
+  to use), `level` (Level of minification. The lower, the less minified.), and `log` (A `Function` for outputting all debug information. I generally use `require('sys').debug`).
+* `callback` is a `Function` to be called once the code is returned from the engine. It's passed back in the format `callback(error, code);`
 
 Node that a callback is required because some methods (read: gcc) require asynchronous calls. In order to support this sort of engine, all code comes from callbacks. A good example may be
 
     var myCode = "...codehere...";
-    require('minifyjs').minify(myCode, function (code) {
-    	//Minified code exists in code.
-    	
-    	//Push all code to stdout
-    	console.log(code);
-    }, 'gcc', 3, function (msg) {
-    	//Push all log messages to stderr.
-    	process.error(msg);
-    });
+    function presentCode(error, code) {
+        if (error) {
+            throw error;
+        }
+        //Present the code to the user...
+    }
+    require('minifyjs').minify(myCode, { engine: 'yui' }, presentCode);
 
 ## Conclusion
 
-Enjoy! Please fork, push and file issues as desired.
+Enjoy! Please fork, push and file issues as desired. Feel free to
+contribute!
