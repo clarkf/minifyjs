@@ -5,7 +5,7 @@
   "main": "lib/minify",
   "keywords": ["minify", "minifier", "min", "minification", "uglify", "gcc", "closure", "yui"],
   "bin": {
-    "minifyjs": "./bin/minify"
+    "minifyjs": "./bin/minify.js"
   },
   "engines": {
     "node": "*"
