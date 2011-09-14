@@ -23,6 +23,7 @@
     "uglify-js": ">=0.0.2",
     "yui-compressor": ">=0.1.1",
     "closure-compiler": ">=0.1.0",
-    "beautifyjs": ""
+    "beautifyjs": "",
+    "step": ""
   }
 }
