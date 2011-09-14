@@ -1,29 +1,32 @@
 {
-  "name": "minifyjs",
-  "author": "Clark Fischer",
-  "version": "0.0.6",
-  "main": "lib/minify.js",
-  "keywords": ["minify", "minifier", "min", "minification", "uglify", "gcc", "closure", "yui"],
-  "bin": {
-    "minifyjs": "./bin/minify.js"
-  },
-  "engines": {
-    "node": "*"
-  },
-  "description": "A node-based javascript minifier/beautifier.",
-  "homepage": "http://github.com/clarkf/minifyjs",
-  "directories": {
-    "lib": "lib"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/clarkf/minifyjs.git"
-  },
-  "dependencies": {
-    "uglify-js": ">=0.0.2",
-    "yui-compressor": ">=0.1.1",
-    "closure-compiler": ">=0.1.0",
-    "beautifyjs": "",
-    "step": ""
-  }
+    "name": "minifyjs",
+    "author": "Clark Fischer",
+    "version": "0.0.6",
+    "main": "lib/minify.js",
+    "keywords": ["minify", "minifier", "min", "minification", "uglify", "gcc", "closure", "yui"],
+    "bin": {
+        "minifyjs": "./bin/minify"
+    },
+    "scripts" : {
+        "test": "node test/test_beautifiers.js && node test/test_best.js && node test/test_lib.js && node test/test_minifiers.js"
+    },
+    "engines": {
+        "node": "*"
+    },
+    "description": "A node-based javascript minifier/beautifier.",
+    "homepage": "http://github.com/clarkf/minifyjs",
+    "directories": {
+        "lib": "lib"
+    },
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/clarkf/minifyjs.git"
+    },
+    "dependencies": {
+        "uglify-js": ">=0.0.2",
+        "yui-compressor": ">=0.1.1",
+        "closure-compiler": ">=0.1.0",
+        "beautifyjs": "",
+        "step": ""
+    }
 }
