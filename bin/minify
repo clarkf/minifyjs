@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 global.sys = require(/^v0\.[012]/.test(process.version) ? "sys" : "util");
 var fs = require("fs");
 var minify = require("minifyjs");
