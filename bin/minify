@@ -1,92 +1,73 @@
 #!/usr/bin/env node
+var fs = require('fs'),
+    path = require('path'),
+    nopt = require('nopt'),
+    minify = require(path.join(__dirname, '../lib/minify')),
+    input = "",
+    knownOpts = {
+        "mode": ["minify", "beautify"],
+        "level": Number,
+        "engine": String,
+        "verbose": Boolean,
+        "output": path
+    },
+    shorthands = {
+        "v": ["--verbose"],
+        "m": ["--mode minify"],
+        "b": ["--mode beautify"]
+    },
+    parsed = nopt(knownOpts, shorthands, process.argv);
 
-global.sys = require(/^v0\.[012]/.test(process.version) ? "sys" : "util");
-var fs = require("fs");
-var minify = require("minifyjs");
+if (parsed.help) {
+    console.log("Usage: minifyjs [-m|b] [-v|--verbose] [--engine ENG] [--level 0|1|2] [--output /dir/file.js]\n" +
+                "\n" +
+                "Options:\n" +
+                "    -m            Minify. If -b is not specified, this is the default.\n" +
+                "    -b            Beautify\n" +
+                "    -v/--verbose  Turn verbosity on\n" +
+                "    --level       Minification level. Can be 0-2.\n" +
+                "    --engine      Use engine x. Options are below\n" +
+                "    --output      Output to a specific file, rather than stdout\n" +
+                "\n\n" +
+                "Available minifiers:\n\t" +
+                Object.keys(minify.minifiers).join("\n\t")+"\n"+
+                "Available beautifiers:\n\t" +
+                Object.keys(minify.beautifiers).join("\n\t")+"\n\n");
+    process.exit(1);
+}
+parsed.mode = parsed.mode || 'minify';
+parsed.level = parsed.level || 0;
+if (parsed.level < 0 || parsed.level > 2) throw new Error("Level must be between 0 and 2.");
 
-var options = {
-    mode: 'minify',
-    level: 3,
-    verbose: false,
-    output: true            // stdout
-};
+function processIt(data) {
+    var fn = minify.minify;
+    if (parsed.mode === 'beautify') fn = minify.beautify;
+    var options = {};
+    if (parsed.level) options.level = parsed.level;
+    if (parsed.engine) options.engine = parsed.engine;
+    fn(data, options, function (err, data) {
+        if (err) throw err;
+        if (!options.output) return console.log(data.toString());
 
-var args = Array.prototype.slice.call(process.argv, 2);
-var filename;
-
-out: while (args.length > 0) {
-    var v = args.shift();
-    switch (v) {
-        case "-b":
-            case "--beautify":
-                options.mode = 'beautify';
-        break;
-        case "-m":
-            case "--minify":
-                options.mode = 'minify';
-        break;
-        case "-l":
-            case "--level":
-                options.level = Number(args.shift());
-        break;
-        case "--engine":
-            case "-e":
-                options.engine = args.shift();
-        break;
-        case "--verbose":
-            case "-v":
-                options.log = require('util').debug;
-        break;
-        case "-o":
-            case "--output":
-                options.output = args.shift();
-        break;
-        default:
-            filename = v;
-        break out;
-    }
+        fs.writeFile(options.output, data, function (e) {
+            if (e) throw e;
+            process.exit(0);
+        });
+    });
 }
 
-if (filename) {
-    fs.readFile(filename, "utf8", function(err, text){
-        processIt(text,output);
+if (parsed.argv.remain.length) {
+    input = fs.readFile(path.resolve(process.cwd(), parsed.argv.remain[0]), function (err, data) {
+        if (err) throw err;
+        processIt(data.toString());
     });
 } else {
-    var stdin = process.openStdin();
-    stdin.setEncoding("utf8");
-    var text = "";
-    stdin.on("data", function(chunk){
-        text += chunk;
+    process.stdin.resume();
+    process.stdin.on('data', function (chunk) {
+        input += chunk.toString();
     });
-    stdin.on("end", function() {
-        processIt(text,output);
+    process.stdin.on('end', function () {
+        processIt(input);
     });
 }
 
-function output(error, text) {
-    var out;
-    if (options.output === true) {
-        out = process.stdout;
-    } else {
-        console.log('Writing to options.output');
-        out = fs.createWriteStream(options.output, {
-            flags: "w",
-            encoding: "utf8",
-            mode: 0644
-        });
-    }
-    out.write(text.toString());
-    out.end();
-};
-
-// --------- main ends here.
-
-function processIt(code, cb) {
-    try {
-        minify[options.mode](code, options, cb);
-    } catch(ex) {
-        sys.debug(ex.stack);
-        sys.debug(sys.inspect(ex));
-        sys.debug(JSON.stringify(ex));
-    }
-};
