@@ -8,7 +8,7 @@
         "minifyjs": "./bin/minify"
     },
     "scripts" : {
-        "test": "node test/test_beautifiers.js && node test/test_best.js && node test/test_lib.js && node test/test_minifiers.js"
+        "test": "node test/test_lib.js"
     },
     "engines": {
         "node": "*"
