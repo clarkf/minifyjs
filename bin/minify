@@ -46,7 +46,14 @@ function processIt(data) {
     if (parsed.level) options.level = parsed.level;
     if (parsed.engine) options.engine = parsed.engine;
     fn(data, options, function (err, data) {
-        if (err) throw err;
+        if (err) {
+            process.stderr.write("Looks like we got some errors:");
+            err = err instanceof Array ? err : [err];
+            err.forEach(function (e) {
+                process.stderr.write("\t" + (e.message || e) + "\n\n");
+            });
+            process.exit(1);
+        }
         if (!options.output) return console.log(data.toString());
 
         fs.writeFile(options.output, data, function (e) {

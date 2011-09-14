@@ -1,11 +1,11 @@
 var expectations = 0,
     fulfilled = 0;
 
-function expect (num) {
+global.expect = function expect (num) {
     num = num || 1;
     expectations = expectations + num;
 }
-function fulfill () {
+global.fulfill = function fulfill () {
     fulfilled++;
 }
 
