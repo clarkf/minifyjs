@@ -85,6 +85,7 @@ Where
 * `code` is a `String` containing the code to be processed.
 * `options` is a key/value hash. Options include: `engine` (the engine
   to use), `level` (Level of minification. The lower, the less minified.), and `log` (A `Function` for outputting all debug information. I generally use `require('sys').debug`).
+  If you're beautifying code, you can also set the `indent_size` option (A number specifying how many spaces count for a single level of indentation).
 * `callback` is a `Function` to be called once the code is returned from the engine. It's passed back in the format `callback(error, code);`
 
 Node that a callback is required because some methods (read: gcc) require asynchronous calls. In order to support this sort of engine, all code comes from callbacks. A good example may be
