@@ -27,7 +27,6 @@
         "yuicompressor": "~2.4",
         "closure-compiler": "~0.2",
         "any-beautify": "~0.8",
-        "step": "~0.0",
         "optimist": "~0.3"
     },
     "devDependencies": {
