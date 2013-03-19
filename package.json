@@ -23,11 +23,16 @@
         "url": "http://github.com/clarkf/minifyjs.git"
     },
     "dependencies": {
-        "uglify-js": ">=0.0.2",
-        "yui-compressor": ">=0.1.1",
-        "closure-compiler": ">=0.1.0",
-        "beautifyjs": "",
-        "step": "",
-        "nopt": "*"
+        "uglify-js": "~2.2",
+        "yuicompressor": "~2.4",
+        "closure-compiler": "~0.2",
+        "any-beautify": "~0.8",
+        "step": "~0.0",
+        "optimist": "~0.3"
+    },
+    "devDependencies": {
+        "mocha": "~1.8",
+        "expect.js": "~0.2",
+        "sinon": "~1.6"
     }
 }
