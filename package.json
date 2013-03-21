@@ -8,10 +8,10 @@
         "minifyjs": "./bin/minify"
     },
     "scripts" : {
-        "test": "node test/test_lib.js"
+        "test": "./node_modules/.bin/mocha test/*.js test/minifiers/*.js test/beautifiers/*.js"
     },
     "engines": {
-        "node": "*"
+        "node": ">= 0.6"
     },
     "description": "A node-based javascript minifier/beautifier.",
     "homepage": "http://github.com/clarkf/minifyjs",
