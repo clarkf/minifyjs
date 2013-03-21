@@ -1,80 +1,96 @@
 #!/usr/bin/env node
 var fs = require('fs'),
     path = require('path'),
-    nopt = require('nopt'),
-    minify = require(path.join(__dirname, '../lib/minify')),
-    input = "",
-    knownOpts = {
-        "mode": ["minify", "beautify"],
-        "level": Number,
-        "engine": String,
-        "verbose": Boolean,
-        "output": path
-    },
-    shorthands = {
-        "v": ["--verbose"],
-        "m": ["--mode minify"],
-        "b": ["--mode beautify"]
-    },
-    parsed = nopt(knownOpts, shorthands, process.argv);
+    minify = require(path.join(__dirname, '../')),
+    input_stream,
+    output_stream,
+    log = console.error,
+    mode,
+    options = {},
+    optimist = require('optimist'),
+    argv = optimist
+        .usage("$0 [-b|-m] [--engine=ENGINE] [--level=0|1|2] -i file.js -o out.js\n\
+cat file.js | $0 [-b|-m] [--engine=ENGINE] [--level=0] > out.js")
+        .boolean("minify").alias("minify", "m")
+        .describe("minify", "Enable minification")
+        .boolean("beautify").alias("beautify", "b")
+        .describe("beautify", "Enable beautification")
+        .alias("level", "l").default("level", 0)
+        .describe("level", "Set minification level")
+        .string("engine").alias("engine", "e")
+        .describe("engine", "Set beauti/minification engine")
+        .default("engine", "uglify")
+        .string("output").alias("output", "o")
+        .describe("output", "File to output to, otherwise stdout")
+        .string("input").alias("input", "i")
+        .describe("input", "File to read, otherwise stdin")
+        .alias("version", "v")
+        .argv;
 
-if (parsed.help) {
-    console.log("Usage: minifyjs [-m|b] [-v|--verbose] [--engine ENG] [--level 0|1|2] [--output /dir/file.js]\n" +
-                "\n" +
-                "Options:\n" +
-                "    -m            Minify. If -b is not specified, this is the default.\n" +
-                "    -b            Beautify\n" +
-                "    -v/--verbose  Turn verbosity on\n" +
-                "    --level       Minification level. Can be 0-2.\n" +
-                "    --engine      Use engine x. Options are below\n" +
-                "    --output      Output to a specific file, rather than stdout\n" +
-                "\n\n" +
-                "Available minifiers:\n\t" +
-                Object.keys(minify.minifiers).join("\n\t")+"\n"+
-                "Available beautifiers:\n\t" +
-                Object.keys(minify.beautifiers).join("\n\t")+"\n\n");
-    process.exit(1);
-}
-parsed.mode = parsed.mode || 'minify';
-parsed.level = parsed.level || 0;
-if (parsed.level < 0 || parsed.level > 2) throw new Error("Level must be between 0 and 2.");
-
-function processIt(data) {
-    var fn = minify.minify;
-    if (parsed.mode === 'beautify') fn = minify.beautify;
-    var options = {};
-    if (parsed.level) options.level = parsed.level;
-    if (parsed.engine) options.engine = parsed.engine;
-    fn(data, options, function (err, data) {
-        if (err) {
-            process.stderr.write("Looks like we got some errors:");
-            err = err instanceof Array ? err : [err];
-            err.forEach(function (e) {
-                process.stderr.write("\t" + (e.message || e) + "\n\n");
-            });
-            process.exit(1);
-        }
-        if (!options.output) return console.log(data.toString());
-
-        fs.writeFile(options.output, data, function (e) {
-            if (e) throw e;
-            process.exit(0);
-        });
-    });
+if (argv.version) {
+    log("minifyjs v" + minify.version);
+    process.exit(0);
 }
 
-if (parsed.argv.remain.length) {
-    input = fs.readFile(path.resolve(process.cwd(), parsed.argv.remain[0]), function (err, data) {
-        if (err) throw err;
-        processIt(data.toString());
+if (argv.help) {
+    optimist.showHelp(log);
+    process.exit(0);
+}
+
+if (argv._.indexOf('list') > -1) {
+    // List engines and bail
+    log("minifyjs v" + minify.version + "\n");
+    log("Minifiers:\n");
+    Object.keys(minify.minifiers).forEach(function (m) {
+        log("\t- " + m);
     });
+    log("\nBeautifiers:");
+    Object.keys(minify.beautifiers).forEach(function (m) {
+        log("\t- " + m);
+    });
+    process.exit(0);
+}
+
+if (argv.minify && argv.beautify) {
+    optimist.showHelp(log);
+    log("\nCannot minify and beautify, please choose only one of -b/-m.");
+    process.exit(0);
+}
+
+if (!argv.minify && !argv.beautify) {
+    optimist.showHelp(log);
+    log("\nPlease specify either -b[eautify] or -m[inify].");
+    process.exit(0);
+}
+
+// Determine input
+if (argv.input) {
+    // File specified
+    input_stream = fs.createReadStream(argv.input);
 } else {
-    process.stdin.resume();
-    process.stdin.on('data', function (chunk) {
-        input += chunk.toString();
-    });
-    process.stdin.on('end', function () {
-        processIt(input);
-    });
+    // Stdin
+    input_stream = process.stdin;
+    input_stream.resume();
 }
 
+// Determine output
+if (argv.output) {
+    // Output file specified
+    output_stream = fs.createWriteStream(argv.output);
+} else {
+    // Stdout
+    output_stream = process.stdout;
+}
+
+options.engine = argv.engine;
+options.level = argv.level;
+
+mode = argv.minify ? minify.minify : minify.beautify;
+mode(input_stream, options, function (err, result) {
+    if (err)
+        throw err;
+    output_stream.write(result);
+    try {
+        output_stream.end();
+    } catch (e) {}
+});
