@@ -2,7 +2,7 @@ var expect = require('expect.js'),
     sinon = require('sinon'),
     fs = require('fs'),
     minify = require('../../'),
-    beautify = require('any-beautify');
+    beautify = require('js-beautify');
     
 function fixture(name) {
     var path = __dirname + "/../fixtures/" + name;
@@ -12,7 +12,7 @@ function fixture(name) {
 describe("MinifyJS", function () {
     describe("`js-beautify` beautifier", function () {
         it("should return the code", function (done) {
-            sinon.spy(beautify, 'js');
+            sinon.spy(beautify, 'js_beautify');
             minify.beautify(fixture("valid.js"), {
                 engine: 'js-beautify'
             }, function (err, data) {
@@ -20,8 +20,8 @@ describe("MinifyJS", function () {
                     throw err;
 
                 expect(data).to.be.a('string');
-                expect(beautify.js.called).to.be(true);
-                beautify.js.restore();
+                expect(beautify.js_beautify.called).to.be(true);
+                beautify.js_beautify.restore();
                 done();
             })
         });
