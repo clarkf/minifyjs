@@ -37,9 +37,9 @@ Possible arguments
 * `-m` or `--minify` — Minify code. Available options for the minification engine
 * `-e` or `--engine E` — Specify an engine. If left unspecified, it defaults to 'best', for minification, or 'js-beautify' for beautification. For a list of available engines, see Engine section below.
 * `-l I` or `--level I` — Specify a minification level (does not apply to beautification). Generally, there are three levels available:
-        * `0` — Strips whitespace, leaves code intact (depending on engine)
-        * `1` — Simple optimizations. Changes code slightly without deep optimization. Probably what you'll want for most code.
-        * `2` — Advanced optimizations.
+    * `0` — Strips whitespace, leaves code intact (depending on engine)
+    * `1` — Simple optimizations. Changes code slightly without deep optimization. Probably what you'll want for most code.
+    * `2` — Advanced optimizations.
 * `-o` or `--output` — Write data to a specific file instead of outputting to `STDOUT`.
 
 The concept here is for use within larger projects. You can easily integrate this into your workflow using:
