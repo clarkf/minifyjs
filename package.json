@@ -1,7 +1,7 @@
 {
     "name": "minifyjs",
     "author": "Clark Fischer",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "main": "lib/minify.js",
     "keywords": ["minify", "minifier", "min", "minification", "uglify", "gcc", "closure", "yui"],
     "bin": {
