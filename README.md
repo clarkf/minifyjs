@@ -104,3 +104,7 @@ Node that a callback is required because some methods (read: gcc) require asynch
 
 Enjoy! Please fork, push and file issues as desired. Feel free to
 contribute!
+
+## License
+
+MinifyJS is released under the [MIT License](http://www.opensource.org/licenses/MIT).
